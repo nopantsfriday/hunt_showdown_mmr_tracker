@@ -137,7 +137,7 @@ function Invoke-MoveCreatedFile {
 	# Waiting 5 seconds so file can be fully created
 	Start-Sleep -Seconds 5
 
-	Write-Host "`n`tNew Highlights detected" -ForegroundColor Green
+	#Write-Host "`n`tNew Highlights detected" -ForegroundColor Green
 	
 	$FullFromPath = "$TempHighlightsPath\$Name"
 	$FileName = [System.IO.Path]::GetFileName($FullFromPath)
@@ -164,19 +164,19 @@ function Invoke-MoveCreatedFile {
 
 		if ((Test-Path -Path $FullDestinationPath) -eq $true) {
 			$result = Move-Item -Path "$FromPath\$FileName" -Destination "$FullDestinationPath" -Force -PassThru
-			Write-Host $FullDestinationPath
+			#Write-Host $FullDestinationPath
 
 			$New_FileName = $result.Name
 			if ((Test-Path -Path "$FullDestinationPath\$New_FileName") -eq $true) {
-				Write-Host "`t`t$FileName moved" -ForegroundColor DarkGreen
+				Write-Host "$FullDestinationPath\$FileName moved" -ForegroundColor DarkGreen
 			}
 			else {
-				Write-Host "`t`t$FileName hasn't been moved :(" -ForegroundColor Red
+				Write-Host "$FileName hasn't been moved :(" -ForegroundColor Red
 			}
 		}
 		else {
-			Write-Host "`tFolder $GameName\$year\$month\$day doesn't exist or can't be created" -ForegroundColor Red
-			Write-Host "`tFile hasn't been moved." -ForegroundColor Red
+			Write-Host "Folder $GameName\$year\$month\$day doesn't exist or can't be created" -ForegroundColor Red
+			Write-Host "File hasn't been moved." -ForegroundColor Red
 		}
 	}
 }
@@ -187,7 +187,7 @@ function Invoke-MoveCreatedFile {
 
 
 try {
-	Write-Host "`nWaiting for new Highlights and tracking MMR... " -NoNewline
+	Write-Host "Waiting for new Highlights and tracking MMR... "
 
 	Register-ObjectEvent $elo_watcher Changed -SourceIdentifier FileChange -Action {
 		$XMLPath = "$mmr_watchfolder\$mmr_watchfile"
@@ -233,7 +233,7 @@ try {
 
 		Invoke-MoveCreatedFile -Change $result
 		# the loop runs forever until you hit CTRL+C    
-	} while ( (Get-Process -Name "HuntGame" -ErrorAction SilentlyContinue).Count -eq 0) {
+	} while ( (Get-Process -Name "HuntGame" -ErrorAction SilentlyContinue).Count -gt 0) {
 		$true
 	}
 	
